@@ -1,0 +1,29 @@
+version: "2.4"
+
+networks:
+  project-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24
+
+services:
+  project:
+    container_name: project
+    image: project:latest
+    labels:
+      - "docker.container.namespace=project"
+    restart: on-failure
+    stop_signal: SIGKILL
+    environment:
+      CONFIG_PATH: "/service/configs/config-local.yaml"
+    volumes:
+      - pon-tp1-data:/pon/data
+      - ../configs:/service/configs:ro
+    command: "./project"
+    networks:
+      project-net:
+        ipv4_address: 192.168.100.11
+
+volumes:
+  project-data:
